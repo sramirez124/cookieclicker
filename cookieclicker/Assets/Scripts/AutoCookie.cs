@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AutCookie : MonoBehaviour
+public class AutoCookie : MonoBehaviour
 {
     public bool creatingCookie;
     public static int cookieIncrease = 1;
