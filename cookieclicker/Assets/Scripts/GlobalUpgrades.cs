@@ -5,37 +5,39 @@ using UnityEngine.UI;
 
 public class GlobalUpgrades : MonoBehaviour
 {
-    public GameObject fakeButton;
-    public GameObject realButton;
-    public GameObject fakeText;
+    public static Button realButton;
     public GameObject realText;
     public int currentCash;
-    public static int bakerValue = 10;
-    public static bool turnOffButton;
+    public static int bakerValue = 1;
+    public GameObject bakerStats;
+    public static int numOfBakers;
+    public static int bakerAutoPerSec;
     // Start is called before the first frame update
     void Start()
     {
-
+      realButton = GetComponent<Button>();
+      realText.GetComponent<Text>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        currentCash = GlobalCash.cashCount;
-        fakeText.GetComponent<Text>().text = "Hire New Baker - $" + bakerValue;
-        realText.GetComponent<Text>().text = "Hire New Baker - $" + bakerValue;
-        if (currentCash >= bakerValue)
-        {
-          fakeButton.SetActive(false);
-          realButton.SetActive(true);
-        }
+      currentCash = GlobalCash.cashCount;
+      bakerStats.GetComponent<Text>().text = "Bakers: " + numOfBakers + " @ " + bakerAutoPerSec +" Per Second";
+      realText.GetComponent<Text>().text = "Hire New Baker - $" + bakerValue;
+      TurnOn();
+    }
 
-        if (turnOffButton == true)
-        {
-          realButton.SetActive(false);
-          fakeButton.SetActive(true);
-          turnOffButton = false;
-        }
+    public void TurnOn()
+    {
 
+      if (currentCash >= bakerValue)
+      {
+        realButton.interactable = true;
+      }
+      else
+      {
+        realButton.interactable = false;
+      }
     }
 }

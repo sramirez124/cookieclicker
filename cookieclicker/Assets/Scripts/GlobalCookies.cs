@@ -13,7 +13,7 @@ public class GlobalCookies : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+      //cookieDisplay.GetComponent<Text>();
     }
 
     // Update is called once per frame
@@ -21,5 +21,10 @@ public class GlobalCookies : MonoBehaviour
     {
         internalCookie = cookieCount;
         cookieDisplay.GetComponent<Text>().text = "Cookies: " + internalCookie;
+    }
+
+    public void ClickTheButton()
+    {
+      cookieCount += 1;
     }
 }
