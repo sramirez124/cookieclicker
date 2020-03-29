@@ -31,16 +31,15 @@ public class SceneManager : MonoBehaviour
     [Header("AutoCookie Settings")]
     public bool creatingCookie;
     public int cookieIncrease = 1;
-    public int internalIncrease;
+    public int internalIncrease; // figure out what this does
 
     // Cost for inital upgrade variables
     [Header("Inital Upgrade Cost")]
-    [SerializeField] private int bakerValue = 50;
+    [SerializeField] private int bakerValue = 1;
     // Start is called before the first frame update
     void Start()
     {
-      bakerButton = GetComponent<Button>();
-      bakerText.GetComponent<Text>();
+
     }
 
     // Update is called once per frame
@@ -74,8 +73,8 @@ public class SceneManager : MonoBehaviour
       }
       else
       {
-        cookieCount -= 1;
-        cashCount += 1;
+        cashCount += cookieCount;
+        cookieCount -= cookieCount;
       }
 
     }
@@ -93,25 +92,22 @@ public class SceneManager : MonoBehaviour
       }
     }
 
-    public void AutoCookie()
+    public void AutoCookie() // I have no clue what internalIncrease does but it works for now
     {
         cookieIncrease = bakerAutoPerSec;
         internalIncrease = cookieIncrease;
-        if ( creatingCookie == false)
-        {
-          creatingCookie = true;
-          StartCoroutine(CreateTheCookie());
-        }
+        creatingCookie = true;
+        StartCoroutine(CreateTheCookie());
     }
 
     public void StartAutoCookie()
     {
-      AutoCookie.SetActive(true);
-      GlobalCash.cashCount -= GlobalUpgrades.bakerValue;
-      GlobalUpgrades.bakerValue *= 2;
-      GlobalUpgrades.realButton.interactable = false;
-      GlobalUpgrades.bakerAutoPerSec += 1;
-      GlobalUpgrades.numOfBakers += 1;
+      cashCount -= bakerValue;
+      bakerValue *= 2;
+      bakerButton.interactable = false;
+      bakerAutoPerSec += 1;
+      numOfBakers += 1;
+      AutoCookie();
     }
 
     IEnumerator CreateTheCookie()
@@ -119,5 +115,6 @@ public class SceneManager : MonoBehaviour
       cookieCount += internalIncrease;
       yield return new WaitForSeconds(1);
       creatingCookie = false;
+      AutoCookie();
     }
 }
