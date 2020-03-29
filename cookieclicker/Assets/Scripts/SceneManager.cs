@@ -23,7 +23,7 @@ public class SceneManager : MonoBehaviour
 
     // GlobalCash variables
     [Header("Money Settings")]
-    [SerializeField] private int cashCount;
+    [SerializeField] private static int cashCount;
     [SerializeField] private GameObject CashDisplay;
     [SerializeField] private GameObject textBox;
     [SerializeField] private GameObject statusBox;
