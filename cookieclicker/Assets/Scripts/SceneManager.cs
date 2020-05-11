@@ -5,37 +5,47 @@ using UnityEngine.UI;
 
 public class SceneManager : MonoBehaviour
 {
-    /* Right now I am in the process of putting all Global scripts into one script called SceneManager
-       This is to help keep the amount of scripts in the game low  and everything in one place */
 
-    // GlobalCookies variables
     [Header("Cookie Settings")]
     [SerializeField] private float cookieCount;
     [SerializeField] private GameObject cookieDisplay;
+    [SerializeField] private GameObject upgradeStats;
 
-    // GlobalUpgrades variables
-    [Header("Upgrade Settings")]
+
+    [Header("Click Settings")]
+    [SerializeField] private Button clickButton;
+    [SerializeField] private GameObject clickText;
+    [SerializeField] private float numOfClicks;
+    [SerializeField] private float cookiesPerClick = 1; // just gives more cookies per click
+
+    [Header("Baker Settings")]
     [SerializeField] private Button bakerButton;
     [SerializeField] private GameObject bakerText;
-    [SerializeField] private GameObject bakerStats;
     [SerializeField] private float numOfBakers;
     [SerializeField] private float bakerAutoPerSec;
 
-    // GlobalCash variables
-    [Header("Money Settings")]
+    [Header("Oven Settings")]
+    [SerializeField] private Button ovenButton;
+    [SerializeField] private GameObject ovenText;
+    [SerializeField] private float numOfOvens;
+    [SerializeField] private float ovenAutoPerSec;
+
+
+    [Header("AutoCookie Settings")]
+    public bool creatingCookie;
+    public float cookieIncrease = 0;
+
+    [Header("Money Settings")] // not working for some reason
     [SerializeField] private static float cashCount;
     [SerializeField] private GameObject CashDisplay;
     [SerializeField] private GameObject textBox;
     [SerializeField] private GameObject statusBox;
 
-    [Header("AutoCookie Settings")]
-    public bool creatingCookie;
-    public float cookieIncrease = 1;
-    public float internalIncrease;
-
     // Cost for inital upgrade variables
     [Header("Inital Upgrade Cost")]
-    [SerializeField] private float bakerValue = 50;
+    [SerializeField] private float clickValue = 20;
+    [SerializeField] private float bakerValue = 200;
+    [SerializeField] private float ovenValue = 500;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +55,7 @@ public class SceneManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
       // Cookie Display Updates
       cookieDisplay.GetComponent<Text>().text = "Cookies: " + cookieCount;
 
@@ -52,16 +63,24 @@ public class SceneManager : MonoBehaviour
       CashDisplay.GetComponent<Text>().text = "Cash: $" + cashCount;
 
       // Upgrades Display Updates
-      bakerStats.GetComponent<Text>().text = "Bakers: " + numOfBakers + " @ " + bakerAutoPerSec +" Per Second";
+      upgradeStats.GetComponent<Text>().text =
+      "Cookies per click: " + cookiesPerClick +
+      "        Bakers: " + numOfBakers + " @ " + bakerAutoPerSec + " Per Second   " +
+      "Ovens: " + numOfOvens + " @ " + ovenAutoPerSec + " Per Second";
+
+      clickText.GetComponent<Text>().text = "Add Cookies Per Click - $" + clickValue;
       bakerText.GetComponent<Text>().text = "Hire New Baker - $" + bakerValue;
+      ovenText.GetComponent<Text>().text = "Buy New Oven - $" + ovenValue;
       TurnOn(bakerValue, bakerButton);
+      TurnOn(ovenValue, ovenButton);
+      TurnOn(clickValue, clickButton);
 
 
     }
 
     public void ClickToMake() // If clicked, you get a cookie
     {
-      cookieCount += 1;
+      cookieCount += cookiesPerClick;
     }
 
     public void ClickToSell() // If clicked, sell your cookies
@@ -91,31 +110,63 @@ public class SceneManager : MonoBehaviour
       }
     }
 
-    public void StartAutoCookie(float upgradeValue, Button upgradeButton, float upgradePerSec) // this is what starts the auto cookie process
+    public void StartAutoCookie(string upgradeNumber) // this is what starts the auto cookie process
+    {
+      switch (upgradeNumber)
       {
-        cashCount -= upgradeValue;
-        upgradeValue *= 2;
-        upgradeButton.interactable = false;
-        upgradePerSec += 0.5F;
+        case "1":
+        cashCount -= bakerValue;
+        bakerValue *= 2;
+        bakerButton.interactable = false;
+        bakerAutoPerSec += 0.5f;
+        cookieIncrease += bakerAutoPerSec;
         numOfBakers += 1;
-        AutoCookie(upgradePerSec);
+        AutoCookie();
+        break;
+
+        case "2":
+        cashCount -= ovenValue;
+        ovenValue *= 2;
+        ovenButton.interactable = false;
+        ovenAutoPerSec += 2f;
+        cookieIncrease += ovenAutoPerSec;
+        numOfOvens += 1;
+        AutoCookie();
+        break;
+
+        case "3":
+        cashCount -= clickValue;
+        clickValue *= 4;
+        clickButton.interactable = false;
+        numOfClicks += 1;
+        cookiesPerClick++;
+        break;
       }
 
-
-    public void AutoCookie(float upgradePerSec)
-    {
-        cookieIncrease = upgradePerSec;
-        internalIncrease = cookieIncrease;
-        creatingCookie = true;
-        StartCoroutine(CreateTheCookie());
     }
 
+    public void AutoCookie()
+    {
+      creatingCookie = true;
+      StartCoroutine(CreateTheCookie());
+    }
 
     IEnumerator CreateTheCookie()
     {
-      cookieCount += internalIncrease;
+      cookieCount += cookieIncrease;
       yield return new WaitForSeconds(1);
       creatingCookie = false;
-      AutoCookie(bakerAutoPerSec);
+      AutoCookie();
     }
+
+    /*public void StartAutoCookie(float upgradeNumber) // this is what starts the auto cookie process
+    {
+      cashCount -= bakerValue;
+      bakerValue *= 2;
+      bakerButton.interactable = false;
+      bakerValue += 0.5F;
+      numOfBakers += 1;
+      AutoCookie();
+    }*/
+
 }
