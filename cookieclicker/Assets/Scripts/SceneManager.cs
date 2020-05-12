@@ -30,6 +30,15 @@ public class SceneManager : MonoBehaviour
     [SerializeField] private float numOfOvens;
     [SerializeField] private float ovenAutoPerSec;
 
+    [Header("Ad Campaign Settings")]
+    [SerializeField] private Button adCampaignButton;
+    [SerializeField] private GameObject adCampaignText;
+    [SerializeField] private float moneyPerSell = 1;
+    [SerializeField] private float numOfBakeries = 1;
+
+    [Header("New Bakery Settings")]
+    [SerializeField] private Button newBakeryButton;
+    [SerializeField] private GameObject newBakeryText;
 
     [Header("AutoCookie Settings")]
     public bool creatingCookie;
@@ -46,6 +55,8 @@ public class SceneManager : MonoBehaviour
     [SerializeField] private float clickValue = 20;
     [SerializeField] private float bakerValue = 200;
     [SerializeField] private float ovenValue = 500;
+    [SerializeField] private float adCampaignValue = 4000;
+    [SerializeField] private float newBakeryValue = 10000;
     // Start is called before the first frame update
     void Start()
     {
@@ -66,14 +77,21 @@ public class SceneManager : MonoBehaviour
       upgradeStats.GetComponent<Text>().text =
       "Cookies per click: " + cookiesPerClick +
       "        Bakers: " + numOfBakers + " @ " + bakerAutoPerSec + " Per Second   " +
-      "Ovens: " + numOfOvens + " @ " + ovenAutoPerSec + " Per Second";
+      "Ovens: " + numOfOvens + " @ " + ovenAutoPerSec + " Per Second    " +
+      "Number of Bakeries: " + numOfBakeries;
 
+      // Upgrade Button Text Updates
       clickText.GetComponent<Text>().text = "Add Cookies Per Click - $" + clickValue;
       bakerText.GetComponent<Text>().text = "Hire New Baker - $" + bakerValue;
       ovenText.GetComponent<Text>().text = "Buy New Oven - $" + ovenValue;
+      adCampaignText.GetComponent<Text>().text = "Ad Campaign - $" + adCampaignValue;
+      newBakeryText.GetComponent<Text>().text = "New Bakery - $" + newBakeryValue;
+
       TurnOn(bakerValue, bakerButton);
       TurnOn(ovenValue, ovenButton);
       TurnOn(clickValue, clickButton);
+      TurnOn(adCampaignValue, adCampaignButton);
+      TurnOn(newBakeryValue, newBakeryButton);
 
 
     }
@@ -92,7 +110,7 @@ public class SceneManager : MonoBehaviour
       }
       else
       {
-        cashCount += cookieCount;
+        cashCount += cookieCount * moneyPerSell;
         cookieCount -= cookieCount;
       }
 
@@ -116,9 +134,9 @@ public class SceneManager : MonoBehaviour
       {
         case "1":
         cashCount -= bakerValue;
-        bakerValue *= 2;
+        bakerValue *= 2f;
         bakerButton.interactable = false;
-        bakerAutoPerSec += 0.5f;
+        bakerAutoPerSec += 0.5f ;
         cookieIncrease += bakerAutoPerSec;
         numOfBakers += 1;
         AutoCookie();
@@ -140,6 +158,27 @@ public class SceneManager : MonoBehaviour
         clickButton.interactable = false;
         numOfClicks += 1;
         cookiesPerClick++;
+        break;
+
+        case "4":
+        cashCount -= adCampaignValue;
+        adCampaignValue *= 4;
+        adCampaignButton.interactable = false;
+        moneyPerSell *= 2;
+        break;
+
+        case "5":
+        cashCount -= newBakeryValue;
+        adCampaignValue *= 10;
+        bakerValue *= 10;
+        bakerAutoPerSec *= 2f;
+        numOfBakers *= 2;
+        ovenValue *= 10;
+        ovenAutoPerSec *= 2f;
+        numOfOvens *= 2;
+        adCampaignButton.interactable = false;
+        moneyPerSell *= 2;
+        newBakeryValue *= 20;
         break;
       }
 
